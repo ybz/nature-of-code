@@ -24,21 +24,10 @@
                     this.p.point(this.x, this.y);
                 },
                 step : function() {
-                    var choice = Math.floor(p.random(4));
-                    switch (choice) {
-                        case 0:
-                            this.x++;
-                            break;
-                        case 1:
-                            this.x--;
-                            break;
-                        case 2:
-                            this.y++;
-                            break;
-                        case 3:
-                            this.y--;
-                            break;
-                    }
+                    var step_x = p.floor(p.random(3)) - 1;
+                    var step_y = p.floor(p.random(3)) - 1;
+                    this.x += step_x;
+                    this.y += step_y;
                 }
             }
 
