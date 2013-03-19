@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<meta http-equiv="Content=Type" content="text/html; charset=utf-8">
+<html>
+    <head>
+        <title>JS</title>
+        <link rel="stylesheet" href="page.css">
+        <script type="text/javascript" src="../libs/processing-1.4.1.js"></script>
+    </head>
+
+    <body>
+        <canvas id="main_canvas" width="600" height="600"></canvas>
+        <script type="text/javascript">
+            function Walker(processing_instance) {
+                if (!processing_instance) {
+                    throw new Error('missing processing_instance');
+                }
+                this.p = processing_instance;
+                this.x = this.p.width/2;
+                this.y = this.p.height/2;
+            }
+            Walker.prototype = {
+                display : function() {
+                    this.p.stroke(0);
+                    this.p.point(this.x, this.y);
+                },
+                step : function() {
+                    var choice = Math.floor(p.random(4));
+                    switch (choice) {
+                        case 0:
+                            this.x++;
+                            break;
+                        case 1:
+                            this.x--;
+                            break;
+                        case 2:
+                            this.y++;
+                            break;
+                        case 3:
+                            this.y--;
+                            break;
+                    }
+                }
+            }
+
+            function random_walk(processing_instance) {
+                var p = processing_instance;
+                var walker;
+                p.setup = function() {
+                    p.size(600,600);
+                    p.background(230, 230, 225);
+                    walker = new Walker(p);
+                };
+
+                p.draw = function() {
+                    walker.step();
+                    walker.display();
+                };
+            }
+
+            var canvas = document.getElementById('main_canvas');
+            var processingInstance = new Processing(canvas, random_walk);
+            window.p = processingInstance;
+
+        </script>
+    </body>
+</html>
