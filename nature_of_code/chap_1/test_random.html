@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<meta http-equiv="Content=Type" content="text/html; charset=utf-8">
+<html>
+    <head>
+        <title>JS</title>
+        <link rel="stylesheet" href="page.css">
+        <script type="text/javascript" src="../libs/processing-1.4.1.js"></script>
+    </head>
+
+    <body>
+        <canvas id="main_canvas" width="600" height="600"></canvas>
+        <script type="text/javascript">
+            function Graph(range, processing_instance) {
+                this.p = processing_instance;
+                this.data = [];
+                this.highest = 0;
+                for (var i=0; i < range; i++) {
+                    this.data.push(0);
+                };
+            }
+            Graph.prototype = {
+                randomAdd : function randomAdd() {
+                    var index = this.p.floor(this.p.random(this.data.length));
+                    var val = this.data[index] += 1;
+                    if (val > this.highest) {
+                        this.highest = val;
+                    }
+                },
+                display : function display() {
+                    var factor = this.getFactor();
+                    var cell_width = this.p.width / this.data.length;
+                    var cell_height;
+                    for (var i=0; i < this.data.length; i++) {
+                        cell_height = this.data[i] * factor;
+                        p.rect(cell_width * i, this.p.height - cell_height, cell_width, cell_height);
+                    };
+                },
+                getFactor : function getFactor() {
+                    var ret;
+                    if (this.highest < this.p.height * 4 / 5) {
+                        ret = 1;
+                    } else {
+                        ret = (this.p.height / this.highest) * 4 / 5;
+                    }
+                    return ret;
+                }
+            };
+            function randomDistributionGraph(processing_instance) {
+                var p = processing_instance;
+                var graph;
+                p.setup = function() {
+                    p.size(600,600);
+                    p.fill(120, 120, 120);
+                    p.background(230, 230, 225);
+                    p.noStroke();
+                    graph = new Graph(200, p);
+                };
+
+                p.draw = function() {
+                    for (var i=30; i; i--) {
+                        graph.randomAdd();
+                    }
+                    graph.display();
+                };
+            }
+
+            var canvas = document.getElementById('main_canvas');
+            var processingInstance = new Processing(canvas, randomDistributionGraph);
+            window.p = processingInstance;
+
+        </script>
+    </body>
+</html>
