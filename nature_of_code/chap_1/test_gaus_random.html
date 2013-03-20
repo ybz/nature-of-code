@@ -21,7 +21,7 @@
             }
             Graph.prototype = {
                 randomAdd : function randomAdd() {
-                    var index = this.p.floor(this.p.random(this.data.length));
+                    var index = this.p.floor(ybz.getRangedGaussian(0, this.data.length, this.data.length/8));
                     var val = this.data[index] += 1;
                     if (val > this.highest) {
                         this.highest = val;
@@ -54,13 +54,13 @@
                     p.fill(120, 120, 120);
                     p.background(230, 230, 225);
                     p.noStroke();
-                    graph = new Graph(200, p);
+                    graph = new Graph(400, p);
                 };
 
                 p.draw = function() {
                     p.background(230, 230, 225);
                     p.noStroke();
-                    for (var i=30; i; i--) {
+                    for (var i=10000; i; i--) {
                         graph.randomAdd();
                     }
                     graph.display();
