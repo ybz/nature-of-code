@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<meta http-equiv="Content=Type" content="text/html; charset=utf-8">
+<html>
+    <head>
+        <title>JS</title>
+        <link rel="stylesheet" href="page.css">
+        <script type="text/javascript" src="../libs/processing-1.4.1.js"></script>
+        <script type="text/javascript" src="../libs/my_lib.js"></script>
+    </head>
+
+    <body>
+        <canvas id="main_canvas" width="600" height="600"></canvas>
+        <script type="text/javascript">
+            function noiseGraphSketch(processing_instance) {
+                var p = processing_instance;
+                var graph;
+                var w;
+                var yvalues;
+                var xspacing = 6;
+                var yoff = 0.0;
+
+                p.setup = function() {
+                    p.size(600,600);
+                    p.frameRate(30);
+                    p.noStroke();
+                    w = p.width + 16;
+                    yvalues = new Array(Math.floor(w/xspacing));
+                };
+
+                p.draw = function() {
+                    p.background(230, 230, 225);
+                    calcWave();
+                    renderWave();
+                };
+
+                function calcWave() {
+                    var dx = 0.03;
+                    var dy = 0.01;
+                    var amplitude = 100.0;
+
+                    yoff += dy;
+
+                    var xoff = yoff;
+                    for (var i = 0; i < yvalues.length; i++) {
+                        yvalues[i] = (2 * p.noise(xoff)-1) * amplitude;
+                        xoff += dx;
+                    }
+                }
+
+                function renderWave() {
+                    for (var x = 0; x < yvalues.length; x++) {
+                        p.noStroke();
+                        p.fill(0,80);
+                        p.ellipseMode(p.center);
+                        p.ellipse(x * xspacing, p.width / 2 + yvalues[x], 5, 5);
+                    }
+                }
+            }
+
+            var canvas = document.getElementById('main_canvas');
+            var processingInstance = new Processing(canvas, noiseGraphSketch);
+            window.prc = processingInstance;
+
+        </script>
+    </body>
+</html>
