@@ -18,9 +18,9 @@
             NoiseGraph.prototype = {
                 display : function display() {
                     var height;
-                    var time;
+                    var time = 0;
                     for (var i=0; i< this.p.width; i++) {
-                        time = this.time_step * i;
+                        time  += this.time_step;
                         height = this.p.noise(time) * this.p.height * 4 / 5;
                         console.log(time, height);
                         this.p.rect(i, this.p.height - height, 1, height);
@@ -32,7 +32,7 @@
                 var graph;
                 p.setup = function() {
                     p.size(600,600);
-                    p.fill(120, 120, 120);
+                    p.fill(160, 160, 160);
                     p.background(230, 230, 225);
                     p.noStroke();
                     graph = new NoiseGraph(0.002, p);
