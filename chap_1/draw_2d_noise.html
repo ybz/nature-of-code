@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<meta http-equiv="Content=Type" content="text/html; charset=utf-8">
+<html>
+    <head>
+        <title>JS</title>
+        <link rel="stylesheet" href="page.css">
+        <script type="text/javascript" src="../libs/processing-1.4.1.js"></script>
+        <script type="text/javascript" src="../libs/my_lib.js"></script>
+    </head>
+
+    <body>
+        <canvas id="main_canvas" width="600" height="600"></canvas>
+        <script type="text/javascript">
+            function Random2DNoise(processing_instance, random_kind) {
+                this.p = processing_instance;
+                switch (random_kind) {
+                    case 'regular':
+                        this.getColor = this.getRegularColor;
+                        break;
+                    case 'perlin':
+                        this.getColor = this.getPerlinColor;
+                        break;
+                    default:
+                        throw new Error('bad random kind');
+                        break;
+                }
+            }
+            Random2DNoise.prototype = {
+                display : function display() {
+                    var p = this.p;
+                    var color
+                    p.loadPixels();
+                    for (var y = 0; y < p.height; y++) {
+                        for (var x = 0; x < p.width; x++) {
+                            p.pixels.setPixel(x + y * p.width, this.getColor(x, y));
+                        }
+                    }
+                    p.updatePixels();
+                  },
+                  getRegularColor : function getRegularColor(x, y) {
+                    return this.p.color(Math.floor(Math.random() * 256));
+                  },
+                  getPerlinColor : function getPerlinColor(x, y) {
+                    var p = this.p;
+                    var inc_size = 0.01;
+                    return p.color(Math.floor(p.noise(x * inc_size, y * inc_size) * 256));
+                  }
+
+            };
+
+            function sketch2DNoise(processing_instance) {
+                var p = processing_instance;
+                var sketch;
+                p.setup = function() {
+                    p.size(600,600);
+                    p.fill(160, 160, 160);
+                    p.background(230, 230, 225);
+                    p.noStroke();
+                    sketch = new Random2DNoise(p, 'perlin');
+                    window.sketch = sketch;
+                };
+
+                p.draw = function() {
+                    sketch.display();
+                    p.noLoop();
+                };
+            }
+
+            var canvas = document.getElementById('main_canvas');
+            var processingInstance = new Processing(canvas, sketch2DNoise);
+            window.prc = processingInstance;
+
+        </script>
+    </body>
+</html>
