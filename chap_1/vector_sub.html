@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<meta http-equiv="Content=Type" content="text/html; charset=utf-8">
+<html>
+    <head>
+        <title>Nature Of Code</title>
+        <link rel="stylesheet" href="page.css">
+        <script type="text/javascript" src="../libs/processing-1.4.1.js"></script>
+        <script type="text/javascript" src="../libs/my_lib.js"></script>
+    </head>
+
+    <body>
+        <canvas id="main_canvas" width="400" height="400"></canvas>
+        <script type="text/javascript">
+            var canvas = document.getElementById('main_canvas');
+            var processingInstance = new Processing(canvas);
+            window.p = processingInstance;
+            p.size(600,600);
+            p.background(230, 230, 225);
+            p.stroke(0);
+            var mouse_vector;
+            var pos = new p.PVector(p.width / 2, p.height / 2);
+
+            p.draw = function() {
+                mouse_vector = new p.PVector(p.mouseX, p.mouseY);
+                mouse_vector.sub(pos);
+                p.translate(pos.x, pos.y);
+                p.line(0, 0, mouse_vector.x, mouse_vector.y);
+            }
+
+            p.loop();
+
+        </script>
+    </body>
+</html>
