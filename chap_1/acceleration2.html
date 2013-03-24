@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<meta http-equiv="Content=Type" content="text/html; charset=utf-8">
+<html>
+    <head>
+        <title>Nature Of Code</title>
+        <link rel="stylesheet" href="page.css">
+        <script type="text/javascript" src="../libs/processing-1.4.1.js"></script>
+        <script type="text/javascript" src="../libs/my_lib.js"></script>
+    </head>
+
+    <body>
+        <canvas id="main_canvas" width="400" height="400"></canvas>
+        <script type="text/javascript">
+            var canvas = document.getElementById('main_canvas');
+            var processingInstance = new Processing(canvas);
+            window.p = processingInstance;
+            p.size(600,600);
+
+            function Mover() {
+                this.loc = new p.PVector(p.width / 2, p.height / 2);
+                this.velocity = new p.PVector(-0.01, 0.1);
+                this.topspeed = 20;
+            }
+            Mover.prototype = {
+                update : function() {
+                    this.velocity.limit(this.topspeed);
+                    this.loc.add(this.velocity);
+                },
+                display : function() {
+                    p.stroke(0);
+                    p.fill(175);
+                    p.ellipse(this.loc.x, this.loc.y, 16, 16);
+                },
+                checkEdges : function() {
+                    if (this.loc.x > p.width) {
+                        this.loc.x = 0;
+                    } else if (this.loc.x < 0) {
+                        this.loc.x = p.width;
+                    }
+                    if (this.loc.y > p.height) {
+                        this.loc.y = 0;
+                    } else if (this.loc.y < 0) {
+                        this.loc.y = p.height;
+                    }
+                },
+                accelerate : function() {
+                    var v = this.velocity.get()
+                    v.mult(0.1);
+                    this.velocity.add(v);
+                },
+                decelerate : function() {
+                    var v = this.velocity.get()
+                    v.mult(0.1);
+                    this.velocity.sub(v);
+                },
+            };
+
+            var mover = new Mover();
+
+            p.draw = function() {
+                p.background(230);
+                mover.update();
+                mover.checkEdges();
+                mover.display();
+                if (p.__mousePressed) {
+                    if (p.mouseButton == p.LEFT) {
+                        mover.accelerate();
+                    } else if (p.mouseButton == p.RIGHT) {
+                        mover.decelerate();
+                    } else {
+                        mover.resetAcceleration();
+                    }
+                }
+
+            };
+
+            p.loop();
+
+        </script>
+    </body>
+</html>
