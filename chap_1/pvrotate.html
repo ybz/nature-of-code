@@ -24,13 +24,6 @@
                 return p.map(p.mouseX, 0, p.width, 0, p.PI * 2);
             };
 
-            PVRotate = function(pvector, ang) {
-                var new_ang = pvector.heading2D() + ang;
-                var m = pvector.mag();
-                pvector.x = p.cos(ang) * m;
-                pvector.y = p.sin(ang) * m;
-            };
-
             p.draw = function() {
                 p.background(230, 230, 225);
                 p.fill(0);
@@ -39,7 +32,7 @@
                 var pv = new p.PVector(50, 0);
                 p.textSize(text_size);
                 p.text("Angle: " + ang.toPrecision(4), text_size, text_size * 1 + 0.5);
-                PVRotate(pv, ang);
+                ybz.PVRotate(pv, ang);
                 p.line(base_x, base_y, base_x + pv.x, base_y + pv.y);
                 p.text("Heading: " + pv.heading2D().toPrecision(4), text_size, text_size * 2 + 0.5);
             };

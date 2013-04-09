@@ -49,6 +49,13 @@
                     return r1;
                 }
             }
+        },
+
+        PVRotate : function PVRotate(pvector, ang) {
+            var new_ang = pvector.heading2D() + ang;
+            var m = pvector.mag();
+            pvector.x = p.cos(new_ang) * m;
+            pvector.y = p.sin(new_ang) * m;
         }
     };
 }
