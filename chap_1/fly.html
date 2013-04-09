@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<meta http-equiv="Content=Type" content="text/html; charset=utf-8">
+<html>
+    <head>
+        <title>Nature Of Code</title>
+        <link rel="stylesheet" href="page.css">
+        <script type="text/javascript" src="../libs/processing-1.4.1.js"></script>
+        <script type="text/javascript" src="../libs/my_lib.js"></script>
+    </head>
+
+    <body>
+        <canvas id="main_canvas" width="400" height="400"></canvas>
+        <script type="text/javascript">
+            var canvas = document.getElementById('main_canvas');
+            var processingInstance = new Processing(canvas);
+            window.p = processingInstance;
+            p.size(600,600);
+            p.background(230, 230, 225);
+
+            function Fly(x, y) {
+                x = x || p.random(p.width);
+                y = y || p.random(p.height);
+                this.loc = new p.PVector(x, y);
+                this.velocity = new p.PVector(0, 0);
+                this.topspeed = 8;
+                this.size = 4;
+                this.per_pos = 0;
+                this.per_step = 0.06;
+                this.ang_range = 30;
+            };
+            Fly.prototype = {
+                update : function() {
+                    var acceleration = this.velocity.get();
+                    acceleration.normalize();
+                    if (acceleration.x == 0 && acceleration.y == 0) {
+                        acceleration.x = p.random(2);
+                        acceleration.y = p.random(2);
+                    }
+                    acceleration.mult(0.01 * ybz.getRangedGaussian(-28, 30, 8));
+                    var ang = this.ang_range * 2 * (p.noise(this.per_pos)) - this.ang_range;
+                    this.per_pos += this.per_step;
+                    ybz.PVRotate(acceleration, ang);
+                    this.velocity.add(acceleration);
+                    if ((this.velocity.mag() > this.topspeed) || p.random() < 0.02 ) {
+                        this.velocity.normalize();
+                        this.velocity.mult(p.random(1,5));
+                        ybz.PVRotate(this.velocity, p.radians(p.random(-30,30)));
+                    }
+                    this.loc.add(this.velocity);
+                    this.checkEdges();
+                },
+                display : function() {
+                    p.stroke(0);
+                    p.fill(220, 160, 240);
+                    p.ellipse(this.loc.x, this.loc.y, this.size, this.size);
+                },
+                checkEdges : function() {
+                    if (this.loc.x > p.width) {
+                        this.loc.x = 0;
+                    } else if (this.loc.x < 0) {
+                        this.loc.x = p.width;
+                    }
+                    if (this.loc.y > p.height) {
+                        this.loc.y = 0;
+                    } else if (this.loc.y < 0) {
+                        this.loc.y = p.height;
+                    }
+                }
+            };
+
+
+            var fly = new Fly();
+
+            p.draw = function() {
+                p.background(230, 230, 225);
+                fly.update();
+                fly.display();
+            };
+            
+            p.loop();
+
+        </script>
+    </body>
+</html>
