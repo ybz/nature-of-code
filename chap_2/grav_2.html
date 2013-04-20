@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<meta http-equiv="Content=Type" content="text/html; charset=utf-8">
+<html>
+    <head>
+        <title>Nature Of Code</title>
+        <link rel="stylesheet" href="page.css">
+        <script type="text/javascript" src="../libs/processing-1.4.1.js"></script>
+        <script type="text/javascript" src="../libs/my_lib.js"></script>
+    </head>
+
+    <body>
+        <canvas id="main_canvas" width="400" height="400"></canvas>
+        <script type="text/javascript">
+            var canvas = document.getElementById('main_canvas');
+            var processingInstance = new Processing(canvas);
+            window.p = processingInstance;
+            p.size(600,600);
+
+            function Mover() {
+                this.loc = new p.PVector(p.random(p.width), p.random(p.height));
+                this.velocity = new p.PVector(0, 0);
+                this.mass = p.random(0.1, 0.5);
+                this.size = this.mass * 20;
+                this.acceleration = new p.PVector(0, 0);
+                this.topspeed = 20;
+            }
+
+            Mover.prototype = {
+                update : function() {
+                    this.velocity.add(this.acceleration);
+                    this.loc.add(this.velocity);
+                    this.checkEdges();
+                    this.acceleration.mult(0);
+                    this.velocity.limit(this.topspeed);
+                },
+                display : function() {
+                    p.stroke(0);
+                    p.fill(220, 160, 240);
+                    p.ellipse(this.loc.x, this.loc.y, this.size, this.size);
+                },
+                checkEdges : function() {
+                    var edge_friction = 0.8;
+                    if (this.loc.x > p.width) {
+                        this.loc.x = p.width;
+                        this.velocity.x *= -edge_friction;
+                    } else if (this.loc.x < 0) {
+                        this.loc.x = 0;
+                        this.velocity.x *= -edge_friction;
+                    }
+                    if (this.loc.y > p.height) {
+                        this.loc.y = p.height;
+                        this.velocity.y *= -edge_friction;
+                    } else if (this.loc.y < 0) {
+                        this.loc.y = 0;
+                        this.velocity.y *= -edge_friction;
+                    }
+                },
+                applyForce : function(pv) {
+                    var force = pv.get();
+                    force.div(this.mass);
+                    this.acceleration.add(force);
+                 },
+                 attract : function(mover) {
+                     var GRAVITY_CONST = 0.3;
+                     var dir = p.PVector.sub(this.loc, mover.loc);
+                     var distance = Math.max(dir.mag(),3);
+                     dir.normalize();
+                     var mag = (GRAVITY_CONST * mover.mass * this.mass) / (distance * distance);
+                     dir.mult(mag);
+                     return dir
+                 }
+
+            };
+
+            var movers = new Array(8);
+            for (var i=0; i < movers.length; i++) {
+                movers[i] = new Mover();
+            }
+
+            var attractor = new Mover();
+            attractor.mass = 50;
+            attractor.size = 30;
+
+            p.draw = function() {
+                p.background(230, 230, 225);
+                var mover, dir, mag, distance;
+                attractor.display();
+                for (var i=0; i < movers.length; i++) {
+                    mover = movers[i];
+                    mover.applyForce(attractor.attract(mover));
+                    attractor.applyForce(mover.attract(attractor));
+                    mover.update();
+                    mover.display();
+                }
+                attractor.update();
+            };
+
+            p.loop();
+
+        </script>
+    </body>
+</html>
