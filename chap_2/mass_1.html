@@ -17,12 +17,12 @@
             p.size(600,600);
 
             function Mover() {
-                this.loc = new p.PVector(p.random(p.width), p.random(0, p.height));
+                this.loc = new p.PVector(p.random(p.width), 50);
                 this.velocity = new p.PVector(0, 0);
                 this.mass = p.random(10, 30);
                 this.size = this.mass * 0.5;
                 this.acceleration = new p.PVector(0, 0);
-                this.topspeed = 2;
+                this.topspeed = 20;
             }
 
             Mover.prototype = {
@@ -45,7 +45,8 @@
                         this.loc.x = p.width;
                     }
                     if (this.loc.y > p.height) {
-                        this.loc.y = 0;
+                        this.velocity.y = this.velocity.y * -1;
+                        this.loc.y = p.height;
                     } else if (this.loc.y < 0) {
                         this.loc.y = p.height;
                     }
@@ -64,14 +65,19 @@
                 movers[i] = new Mover();
             }
 
-            var wind = new p.PVector(0.02, 0);
+            var wind = new p.PVector(0.2, 0);
+            var gravity = new p.PVector(0, 1);
 
             p.draw = function() {
                 var mover;
+                var gv;
                 p.background(230, 230, 225);
                 for (var i=0; i < movers.length; i++) {
                     mover = movers[i];
                     mover.applyForce(wind);
+                    gv = gravity.get();
+                    gv.mult(mover.mass);
+                    mover.applyForce(gv);
                     mover.update();
                     mover.display();
                 }
