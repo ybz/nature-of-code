@@ -25,12 +25,7 @@
             var obj = {
                 size : 20,
                 calcPos : function() {
-                    var x = center_loc.x + p.cos(theta) * distance_from_center;
-                    var y = center_loc.y + p.sin(theta) * distance_from_center;
-                    return {
-                        x : x,
-                        y : y
-                    }
+                    return ybz.polarToCartesian(distance_from_center, theta, center_loc);
                 },
                 display : function() {
                     pos = this.calcPos();
