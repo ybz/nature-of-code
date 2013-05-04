@@ -50,12 +50,17 @@
                 }
             }
         },
-
         PVRotate : function PVRotate(pvector, ang) {
             var new_ang = pvector.heading2D() + ang;
             var m = pvector.mag();
             pvector.x = p.cos(new_ang) * m;
             pvector.y = p.sin(new_ang) * m;
+        },
+        polarToCartesian : function polarToCartesian(r, theta, start_point) {
+            start_point = start_point || {x : 0, y : 0};
+            var x = start_point.x + Math.cos(theta) * r;
+            var y = start_point.y + Math.sin(theta) * r;
+            return {x : x, y : y}
         }
     };
 }
